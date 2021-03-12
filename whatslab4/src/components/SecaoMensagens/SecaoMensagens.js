@@ -6,7 +6,7 @@ const Principal = styled.div`
     display:flex;
     justify-content:space-between;
     flex-direction:column;
-    width:40%;
+    max-width: 600px;
     margin: 0 auto;
     border: 1px solid black;
     height:98vh;
