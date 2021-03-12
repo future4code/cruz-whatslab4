@@ -50,7 +50,7 @@ export default class NovaMensagem extends React.Component {
     
     onClickEnviarMensagem = () => {
         if (this.state.inputUsuario === '' && this.state.inputMensagem === '') {
-            this.setState({mensagemErro: <ParagraphAlert>Ambos os campos estão vazio, impossivel inviar mensagem</ParagraphAlert>})
+            this.setState({mensagemErro: <ParagraphAlert>Ambos os campos estão vazio, impossivel enviar mensagem</ParagraphAlert>})
         }
         else if (this.state.inputUsuario === '') {
             this.setState({mensagemErro: <ParagraphAlert>Informe um nome de usuário</ParagraphAlert>})
