@@ -7,13 +7,14 @@ const DivFlexRow = styled.div`
 
 const DivFlexColumn = styled(DivFlexRow)`
     flex-direction: column;
-    margin: 0 10px;
+    width: 100%;
 `
 
 const Input = styled.input`
     padding: 10px;
-    flex: 1;
     margin: 0 2px;
+    width: 100px;
+    box-sizing: border-box;
 `
 
 const InputMensagem = styled(Input) `
@@ -21,10 +22,10 @@ const InputMensagem = styled(Input) `
 `
 
 const Botton = styled.button`
-    flex: 1;
     padding: 10px;   
     margin: 0 2px;
     cursor: pointer;
+    box-sizing: border-box;
 `
 
 const ParagraphAlert = styled.p`
@@ -57,12 +58,26 @@ export default class NovaMensagem extends React.Component {
         } else if (this.state.inputMensagem === ''){
             this.setState({mensagemErro: <ParagraphAlert>Mensagem em branco.</ParagraphAlert>})
         } else {
-            this.setState({mensagemErro: ''})
-            
-            // chamar função que altera o estado do pai
-            console.log(`${this.state.inputUsuario} - ${this.state.inputMensagem}`)
-        }
+            const mensagem = {
+                nome: this.state.inputUsuario,
+                mensagem: this.state.inputMensagem
+            }
 
+            this.setState({
+                mensagemErro: '',
+                inputUsuario: '',
+                inputMensagem: ''
+            })
+
+            this.props.enviar(mensagem)
+        }
+    }
+
+    isKeyEnter = (event) => {
+        console.log(event)
+        if (event.code === 'Enter') {
+            this.onClickEnviarMensagem()
+        }
     }
 
     render() {
@@ -70,8 +85,8 @@ export default class NovaMensagem extends React.Component {
             <DivFlexColumn>
                 {this.state.mensagemErro}
                 <DivFlexRow>
-                    <Input value={this.state.inputUsuario} onChange={this.handleInputUsuario} placeholder="Usuário"/>
-                    <InputMensagem value={this.state.inputMensagem} onChange={this.handleInputMensagem} placeholder="Digite sua mensagem..."/>
+                    <Input onKeyUp={this.isKeyEnter} value={this.state.inputUsuario} onChange={this.handleInputUsuario} placeholder="Usuário"/>
+                    <InputMensagem onKeyUp={this.isKeyEnter} value={this.state.inputMensagem} onChange={this.handleInputMensagem} placeholder="Digite sua mensagem..."/>
                     <Botton onClick={this.onClickEnviarMensagem}>Enviar</Botton>
                 </DivFlexRow>
             </DivFlexColumn>
