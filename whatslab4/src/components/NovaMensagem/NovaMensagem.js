@@ -75,7 +75,7 @@ export default class NovaMensagem extends React.Component {
 
     isKeyEnter = (event) => {
         console.log(event)
-        if (event.code === 'Enter') {
+        if (event.key === 'Enter') {
             this.onClickEnviarMensagem()
         }
     }
