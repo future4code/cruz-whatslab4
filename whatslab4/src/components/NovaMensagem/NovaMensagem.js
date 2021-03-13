@@ -17,7 +17,7 @@ const Input = styled.input`
     box-sizing: border-box;
 `
 
-const InputMensagem = styled(Input) `
+const ContentInput = styled(Input) `
     flex: 2;
 `
 
@@ -37,72 +37,63 @@ const ParagraphAlert = styled.p`
 
 export default class NovaMensagem extends React.Component {
     state = {
-        inputUsuario: '',
-        inputMensagem: '',
-        mensagemErro: ''
+        userInput: '',
+        contentInput: '',
+        errorMessage: ''
     }
 
-    handleInputUsuario = (event) => {
-        this.setState({inputUsuario : event.target.value})
+    handleUserInput = (event) => {
+        this.setState({userInput : event.target.value})
     }
-    handleInputMensagem = (event) => {
-        this.setState({inputMensagem : event.target.value})
+    handleContentInput = (event) => {
+        this.setState({contentInput : event.target.value})
     }
     
-    onClickEnviarMensagem = () => {
-        if (this.state.inputUsuario === '' && this.state.inputMensagem === '') {
-            this.setState({
-                mensagemErro: <ParagraphAlert>Ambos os campos estão vazio, impossivel enviar mensagem</ParagraphAlert>
-            })
-        }
-        else if (this.state.inputUsuario === '') {
-            this.setState({
-                mensagemErro: <ParagraphAlert>Informe um nome de usuário</ParagraphAlert>
-            })
-        } else if (this.state.inputMensagem === ''){
-            this.setState({
-                mensagemErro: <ParagraphAlert>Mensagem em branco.</ParagraphAlert>
-            })
+    onClickSendMessage = () => {
+        let error = ''
+        let user = this.state.userInput
+        let content = this.state.contentInput
+
+        if (user === '' && content === '') {
+             error = 'Campo de usuário e mensagem estão vazio, impossível enviar a mensagem'
+        } else if (user === '') {
+            error = 'Informe um nome de usuário'
+        } else if (content === ''){
+            error = 'Compo de mensagem está vazio.'
+        } else if (error === '') {
+            const message = { nome: user, mensagem: content}
+            this.props.enviar(message)
+
+            this.setState({ userInput: '', contentInput: '', errorMessage: ''})
         } else {
-            const mensagem = {
-                nome: this.state.inputUsuario,
-                mensagem: this.state.inputMensagem
-            }
-
-            this.setState({
-                mensagemErro: '',
-                inputUsuario: '',
-                inputMensagem: ''
-            })
-
-            this.props.enviar(mensagem)
+            this.setState({errorMessage: error})
         }
     }
 
     isKeyEnter = (event) => {
         if (event.key === 'Enter') {
-            this.onClickEnviarMensagem()
+            this.onClickSendMessage()
         }
     }
 
     render() {
         return (
             <DivFlexColumn>
-                {this.state.mensagemErro}
+                <ParagraphAlert>{this.state.errorMessage}</ParagraphAlert>
                 <DivFlexRow>
                     <Input 
                         onKeyUp={this.isKeyEnter} 
-                        value={this.state.inputUsuario} 
-                        onChange={this.handleInputUsuario} 
+                        value={this.state.userInput} 
+                        onChange={this.handleUserInput} 
                         placeholder="Usuário"
                     />
-                    <InputMensagem 
+                    <ContentInput 
                         onKeyUp={this.isKeyEnter} 
-                        value={this.state.inputMensagem} 
-                        onChange={this.handleInputMensagem} 
+                        value={this.state.contentInput} 
+                        onChange={this.handleContentInput} 
                         placeholder="Digite sua mensagem..."
                     />
-                    <Botton onClick={this.onClickEnviarMensagem}>Enviar</Botton>
+                    <Botton onClick={this.onClickSendMessage}>Enviar</Botton>
                 </DivFlexRow>
             </DivFlexColumn>
         )
