@@ -17,7 +17,7 @@ const Input = styled.input`
     box-sizing: border-box;
 `
 
-const InputMensagem = styled(Input) `
+const ContentInput = styled(Input) `
     flex: 2;
 `
 
@@ -37,56 +37,67 @@ const ParagraphAlert = styled.p`
 
 export default class NovaMensagem extends React.Component {
     state = {
-        inputUsuario: '',
-        inputMensagem: '',
-        mensagemErro: ''
+        userInput: '',
+        contentInput: '',
+        errorMessage: ''
     }
 
-    handleInputUsuario = (event) => {
-        this.setState({inputUsuario : event.target.value})
+    handleUserInput = (event) => {
+        this.setState({userInput : event.target.value})
     }
-    handleInputMensagem = (event) => {
-        this.setState({inputMensagem : event.target.value})
+    handleContentInput = (event) => {
+        this.setState({contentInput : event.target.value})
     }
     
-    onClickEnviarMensagem = () => {
-        if (this.state.inputUsuario === '' && this.state.inputMensagem === '') {
-            this.setState({mensagemErro: <ParagraphAlert>Ambos os campos estão vazio, impossivel enviar mensagem</ParagraphAlert>})
-        }
-        else if (this.state.inputUsuario === '') {
-            this.setState({mensagemErro: <ParagraphAlert>Informe um nome de usuário</ParagraphAlert>})
-        } else if (this.state.inputMensagem === ''){
-            this.setState({mensagemErro: <ParagraphAlert>Mensagem em branco.</ParagraphAlert>})
+    isValidEntry = (user, content) => {
+        if (user === '' && content === '') {
+           return 'Campo de usuário e mensagem estão vazio, impossível enviar a mensagem'
+       } else if (user === '') {
+           return 'Informe um nome de usuário'
+       } else if (content === ''){
+           return 'Compo de mensagem está vazio.'
+       } else { return true}
+    }
+
+    onClickSendMessage = () => {
+        const user = this.state.userInput
+        const content = this.state.contentInput
+        const isValid = this.isValidEntry(user, content)
+
+        if (isValid) {
+            const message = { nome: user, mensagem: content}
+            this.props.enviar(message)
+
+            this.setState({ userInput: '', contentInput: '', isValidMessage: ''})
         } else {
-            const mensagem = {
-                nome: this.state.inputUsuario,
-                mensagem: this.state.inputMensagem
-            }
-
-            this.setState({
-                mensagemErro: '',
-                inputUsuario: '',
-                inputMensagem: ''
-            })
-
-            this.props.enviar(mensagem)
+            this.setState({errorMessage: isValid})
         }
     }
 
     isKeyEnter = (event) => {
         if (event.key === 'Enter') {
-            this.onClickEnviarMensagem()
+            this.onClickSendMessage()
         }
     }
 
     render() {
         return (
             <DivFlexColumn>
-                {this.state.mensagemErro}
+                <ParagraphAlert>{this.state.isValidMessage}</ParagraphAlert>
                 <DivFlexRow>
-                    <Input onKeyUp={this.isKeyEnter} value={this.state.inputUsuario} onChange={this.handleInputUsuario} placeholder="Usuário"/>
-                    <InputMensagem onKeyUp={this.isKeyEnter} value={this.state.inputMensagem} onChange={this.handleInputMensagem} placeholder="Digite sua mensagem..."/>
-                    <Botton onClick={this.onClickEnviarMensagem}>Enviar</Botton>
+                    <Input 
+                        onKeyUp={this.isKeyEnter} 
+                        value={this.state.userInput} 
+                        onChange={this.handleUserInput} 
+                        placeholder="Usuário"
+                    />
+                    <ContentInput 
+                        onKeyUp={this.isKeyEnter} 
+                        value={this.state.contentInput} 
+                        onChange={this.handleContentInput} 
+                        placeholder="Digite sua mensagem..."
+                    />
+                    <Botton onClick={this.onClickSendMessage}>Enviar</Botton>
                 </DivFlexRow>
             </DivFlexColumn>
         )
