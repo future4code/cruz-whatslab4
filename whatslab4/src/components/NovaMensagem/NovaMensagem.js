@@ -49,24 +49,28 @@ export default class NovaMensagem extends React.Component {
         this.setState({contentInput : event.target.value})
     }
     
-    onClickSendMessage = () => {
-        let error = ''
-        let user = this.state.userInput
-        let content = this.state.contentInput
-
+    isValidEntry = (user, content) => {
         if (user === '' && content === '') {
-             error = 'Campo de usuário e mensagem estão vazio, impossível enviar a mensagem'
-        } else if (user === '') {
-            error = 'Informe um nome de usuário'
-        } else if (content === ''){
-            error = 'Compo de mensagem está vazio.'
-        } else if (error === '') {
+           return 'Campo de usuário e mensagem estão vazio, impossível enviar a mensagem'
+       } else if (user === '') {
+           return 'Informe um nome de usuário'
+       } else if (content === ''){
+           return 'Compo de mensagem está vazio.'
+       } else { return true}
+    }
+
+    onClickSendMessage = () => {
+        const user = this.state.userInput
+        const content = this.state.contentInput
+        const isValid = this.isValidEntry(user, content)
+
+        if (isValid) {
             const message = { nome: user, mensagem: content}
             this.props.enviar(message)
 
-            this.setState({ userInput: '', contentInput: '', errorMessage: ''})
+            this.setState({ userInput: '', contentInput: '', isValidMessage: ''})
         } else {
-            this.setState({errorMessage: error})
+            this.setState({errorMessage: isValid})
         }
     }
 
@@ -79,7 +83,7 @@ export default class NovaMensagem extends React.Component {
     render() {
         return (
             <DivFlexColumn>
-                <ParagraphAlert>{this.state.errorMessage}</ParagraphAlert>
+                <ParagraphAlert>{this.state.isValidMessage}</ParagraphAlert>
                 <DivFlexRow>
                     <Input 
                         onKeyUp={this.isKeyEnter} 
