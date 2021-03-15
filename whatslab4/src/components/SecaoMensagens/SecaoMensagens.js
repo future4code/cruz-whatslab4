@@ -47,20 +47,21 @@ export default class SecaoMensagens extends React.Component {
         this.setState({mensagens:novasMensagems});
     }
     
-    // isDblClick = (event,mensagem) =>{
-    //     if(event.type === 'dblclick'){
-    //         console.log("Estou clicando 2 vezes");
-    //         console.log(mensagem);
-    //     }
-    // }
+    isDblClick = (indexExcluido) =>{
+        const mensagens = this.state.mensagens.filter((_, index) => {
+            return index !== indexExcluido
+        })
+
+        this.setState({mensagens: mensagens})
+    }
     render() {
         
         let mensagens;
         
-        mensagens = this.state.mensagens.map((mensagem) =>{
+        mensagens = this.state.mensagens.map((mensagem, index) =>{
             return(
                 <Mensagem 
-                    // onClick={this.isDblClick}
+                    onDoubleClick={() => {this.isDblClick(index)}}
                     key={mensagem.mensagem}
                 >
                     <strong>{mensagem.nome}</strong> {mensagem.mensagem}
